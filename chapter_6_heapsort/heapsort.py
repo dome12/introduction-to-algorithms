@@ -22,8 +22,13 @@ Created on Tue Jun 30 11:09:40 2020
 3. 排序。最大堆的根结点是最大值，所以和末点交换位置，完成一次排序。然后heap_size-1, 维护最大堆（因为交换首尾数据，并不会影响到根结点的最大堆属性。所以只要在A[:heap_size-1]维护最大堆，就可以得到
 该堆中的最大值）。这样循环heap_size -1 次就可以排序完成。因为每次循环都是找第k个最大值。所以n个数据，只要找到n-1个最大值就可以了。
 
-利用最小堆构建优先队列
+利用最小堆构建最小优先队列
 """
+Created on Tue Jun 30 11:09:40 2020
+
+@author: shitianru
+"""
+
 class max_heap():
     def __init__(self,arr):
         self.arr = arr
@@ -97,3 +102,106 @@ class min_heap():
             self.arr[self.heap_size-1] = tmp
             self.heap_size += -1
             self.min_heapify(1)
+        self.heap_size = self.heap_length
+        
+
+class priority_queque(max_heap):
+    def __init__(self, arr):
+        super(priority_queque, self).__init__(arr)
+        self.build_max_heap()
+        
+    def maximum(self):
+        return self.arr[0]
+    
+    def extract_maximum(self):
+        if self.heap_size < 1:
+            print("all work is done !")
+        else:
+            max_ = self.arr[0]
+            self.arr[0] = self.arr[self.heap_size-1]
+# =============================================================================
+#             self.arr[self.heap_size-1] = max_
+#             whether to exchange head and tail. In the textbook, only assign the tail to head but not exchange the values.
+# =============================================================================
+            self.heap_size += -1
+            self.max_heapify(1)
+        return max_
+        
+    def increase_key(self, i, k):
+        if self.heap_size < 1:
+            print("all work is done !")
+        elif self.arr[i-1] > k:
+            print("what you can do is only to increase the priority!!!")
+        else:
+            self.arr[i-1] = k
+            while i>1:
+                if self.arr[i-1] > self.arr[int(i/2)-1]:
+                    tmp = self.arr[i-1]
+                    self.arr[i-1] = self.arr[int(i/2)-1]
+                    self.arr[int(i/2)-1] = tmp
+                    i = int(i/2)
+                else:
+                    break
+                
+    def insert(self, k):
+        sentinel = - float("inf")
+        self.heap_size += 1
+        self.arr[self.heap_size-1] = sentinel
+        self.increase_key(self.heap_size, k)
+        
+    def get_heap(self):
+        return self.arr[:self.heap_size]
+    
+class min_priority_queque(min_heap):
+    def __init__(self, arr):
+        super(min_priority_queque, self).__init__(arr)
+        self.build_min_heap()
+        
+    def minimum(self):
+        return self.arr[0]
+    
+    def extract_minimum(self):
+        if self.heap_size < 1:
+            print("all work is done !")
+        else:
+            min_ = self.arr[0]
+            self.arr[0] = self.arr[self.heap_size-1]
+# =============================================================================
+#             self.arr[self.heap_size-1] = max_
+#             whether to exchange head and tail. In the textbook, only assign the tail to head but not exchange the values.
+# =============================================================================
+            self.heap_size += -1
+            self.min_heapify(1)
+        return min_
+        
+    def decrease_key(self, i, k):
+        if self.heap_size < 1:
+            print("all work is done !")
+        elif self.arr[i-1] < k:
+            print("what you can do is only to increase the priority!!! Smaller the key is , the more important the work is")
+        else:
+            self.arr[i-1] = k
+            while i>1:
+                if self.arr[i-1] < self.arr[int(i/2)-1]:
+                    tmp = self.arr[i-1]
+                    self.arr[i-1] = self.arr[int(i/2)-1]
+                    self.arr[int(i/2)-1] = tmp
+                    i = int(i/2)
+                else:
+                    break
+                
+    def insert(self, k):
+        sentinel =  float("inf")
+        self.heap_size += 1
+        self.arr[self.heap_size-1] = sentinel
+        self.decrease_key(self.heap_size, k)
+        
+    def get_heap(self):
+        return self.arr[:self.heap_size] 
+      
+if __name__ == "__main__":
+    arr = [2,31,4,12,4,12,3,1,41,4,1,5]
+    a = min_priority_queque(arr)
+    a.extract_minimum()
+    a.get_heap()
+    a.insert(0)
